@@ -49,11 +49,11 @@ void multiplicaMatrizSequencial(int *resultado, int dim){
 }
 
 //funcao que verifica corretude da solucao
-int verificaCorretude(int *sequencial, int dim){
+int verificaCorretude(int *sequencial, int *concorrente ,int dim){
 	for(int i =0; i<dim; i++){
 		for(int j =0; j<dim; j++){
-			if(saidaConcorrente[i*dim + j]!=sequencial[i*dim + j]){
-				return 4;
+			if(concorrente[i*dim + j]!=sequencial[i*dim + j]){
+				return -1; //ERRO
 			}
 		}
 	}
@@ -80,14 +80,16 @@ int main(int argc, char* argv[]){
 	}
 	
 	//alocacao de memoria para as matrizes
-	matriz1 = (int *) malloc(sizeof(int) * dim * dim);
+	//matriz1 = (int *) malloc(sizeof(int) * dim * dim);
+	matriz1 = (int *) calloc(dim*dim, sizeof(int));
 	if(matriz1 == NULL){
-		printf("ERRO --- MALLOC\n");
+		printf("ERRO --- CALLOC\n");
 		return 2;
 	}
-	matriz2 = (int *) malloc(sizeof(int) * dim * dim);
+	//matriz2 = (int *) malloc(sizeof(int) * dim * dim);
+	matriz2 = (int *) calloc(dim*dim, sizeof(int));
 	if(matriz2 == NULL){
-		printf("ERRO --- MALLOC\n");
+		printf("ERRO --- CALLOC\n");
 		return 2;
 	}
 	saidaConcorrente = (int *) malloc(sizeof(int) * dim * dim);
@@ -107,8 +109,8 @@ int main(int argc, char* argv[]){
 	srand(time(NULL)); //passada a semente para gerar numeros aleatorios
 	for(int i =0; i<dim; i++){
 		for(int j = 0; j<dim; j++){
-			saidaConcorrente[i*dim +j] = 0;
-			saidaSequencial[i*dim +j] = 0;
+			//saidaConcorrente[i*dim +j] = 0;
+			//saidaSequencial[i*dim +j] = 0;
 			
 			//gerando numeros aleatorios na faixa de 0 a 10
 			matriz1[i*dim +j] = (rand() % 10);
@@ -156,7 +158,7 @@ int main(int argc, char* argv[]){
 	
 	
 	//verifica corretude da solucao concorrente
-	if(verificaCorretude(saidaSequencial, dim)!=0){
+	if(verificaCorretude(saidaSequencial, saidaConcorrente, dim)!=0){
 		printf("ERRO--corretude\n");
 		return 4;
 	}
